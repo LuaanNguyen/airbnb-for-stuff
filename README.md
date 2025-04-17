@@ -1,4 +1,14 @@
-### To generate mock data
+### Run the server
+
+```Go
+cd backend
+go mod tidy # install depencies
+go run main.go
+```
+
+Check `localhost:8080/healthcheck`
+
+### Generate mock data
 
 ```python
 cd mock-data

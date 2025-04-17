@@ -1,2 +1,4 @@
 venv/
 .vscode/
+backend/.env
+*.env # ignore env at any depth
