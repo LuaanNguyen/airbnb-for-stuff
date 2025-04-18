@@ -1,4 +1,3 @@
-import lineClamp from '@tailwindcss/line-clamp';
 import aspectRatio from '@tailwindcss/aspect-ratio';
 
 /** @type {import('tailwindcss').Config} */
@@ -7,5 +6,5 @@ export default {
 	theme: {
 		extend: {}
 	},
-	plugins: [lineClamp, aspectRatio]
+	plugins: [aspectRatio]
 };
