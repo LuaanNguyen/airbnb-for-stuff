@@ -19,6 +19,7 @@ type Response struct {
     Message string `json:"message,omitempty"`
 }
 
+//------------------------- HTTP functions ----------------
 
 // create a DB connection 
 func CreateConnection() *sql.DB {
@@ -65,6 +66,17 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	db := CreateConnection() // establish connection with 
+	defer db.Close()
+
+	resp := Response {
+		Message: "Hello, you have successfully connected to Postgres 🫶",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
+}
 
 
 //------------------------- handler functions ----------------
