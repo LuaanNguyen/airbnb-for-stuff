@@ -10,12 +10,13 @@ import (
 )
 
 func main() {
-
 	// create a new router 
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
-	r.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
-		db := middleware.CreateConnections()
+
+	// Healthcheck route 
+	router.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		db := middleware.CreateConnection() // establish connection with 
 		defer db.Close()
 
 		resp := middleware.Response {
@@ -26,6 +27,9 @@ func main() {
 		json.NewEncoder(w).Encode(resp)
 	})
 
+	// Get all users route
+	router.HandleFunc("/users", middleware.GetAllUser).Methods("GET", "OPTIONS")
+
 	log.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
