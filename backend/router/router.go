@@ -8,9 +8,9 @@ import (
 func Router() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/healthcheck", middleware.HealthCheck).Methods("GET", "OPTIONS")
-
-	router.HandleFunc("/users", middleware.GetAllUser).Methods("GET", "OPTIONS")
-
+	router.HandleFunc("/api/healthcheck", middleware.HealthCheck).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/users", middleware.GetAllUser).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/user/{id}", middleware.GetUser).Methods("GET", "OPTIONS")
+	router.HandleFunc("/api/items", middleware.GetAllItems).Methods("GET", "OPTIONS")
 	return router
 }

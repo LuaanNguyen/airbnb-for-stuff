@@ -2,82 +2,11 @@ package middleware
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
 
 	"github.com/LuaanNguyen/backend/models"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" // postgres golang driver
 )
-
-// response format
-type Response struct {
-	ID      int64  `json:"id,omitempty"`
-    Message string `json:"message,omitempty"`
-}
-
-//------------------------- HTTP functions ----------------
-
-// create a DB connection 
-func CreateConnection() *sql.DB {
-	fmt.Println("Connecting to Postgres...")
-	
-	// load .env file 
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// open db connection 
-	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URL"))
-	if err != nil {
-		panic(err)
-	}
-
-	// ping the DB
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Successfully connected!")
-    // return the connection
-    return db
-}
-
-
-// Get all users 
-func GetAllUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	// get all the users in the db 
-	users, err := getAllUsers()
-	if err != nil {
-		http.Error(w, "Failed to retrieve users", http.StatusInternalServerError)
-		return
-	}
-
-	// send all users as response
-	json.NewEncoder(w).Encode(users)
-}
-
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	db := CreateConnection() // establish connection with 
-	defer db.Close()
-
-	resp := Response {
-		Message: "Hello, you have successfully connected to Postgres 🫶",
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
-}
-
 
 //------------------------- handler functions ----------------
 func getAllUsers() ([]models.User, error) {
@@ -107,4 +36,65 @@ func getAllUsers() ([]models.User, error) {
 
 	//return empty user on error 
 	return users, err
+}
+
+
+func getUser(id int64) (models.User, error) {
+	// create db connection 
+	db :=CreateConnection()
+	defer db.Close() 
+
+	sqlStatement := `SELECT * FROM users WHERE u_id=$1`
+	row := db.QueryRow(sqlStatement, id) //query
+
+	var user models.User
+	//unmarshal the row object to user 
+	err := row.Scan(&user.ID, &user.Email, &user.PhoneNumber, &user.FirstName, &user.LastName, &user.NickName, &user.Password)
+
+	switch err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+		return user, nil 
+	case nil:
+		return user, nil 
+	default:
+		log.Fatalf("Unable to scan the row: %v", err)
+	}
+
+	// all success, return user without error
+	return user, nil
+}
+
+func getAllItems() ([]models.Item, error) {
+	db := CreateConnection()
+	defer db.Close() 
+
+	sqlStatement := `SELECT * FROM items`
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []models.Item
+	for rows.Next() {
+		var item models.Item
+		err := rows.Scan(
+			&item.ID, 
+			&item.Name, 
+			&item.Description,
+			&item.Image, 
+			&item.CategoryID,
+			&item.Price, 
+			&item.DateListed,
+			&item.Quantity,
+			&item.Available,
+		)
+		if err != nil {
+			log.Printf("Unable to scan the row. %v", err)
+        	continue
+		}
+		items = append(items, item)
+	}
+	return items, nil
 }
