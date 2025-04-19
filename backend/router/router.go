@@ -17,19 +17,18 @@ func Router(db *sql.DB) *mux.Router {
 	// Public routes (no auth required)
 	router.HandleFunc("/healthcheck", handlers.HealthCheck)
 	router.HandleFunc("/login", handlers.Login)
-	router.HandleFunc("/users", handlers.GetAllUser)
 
 	// Protected routes with /api/ prefix
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.AuthMiddleware)  // Auth only for protected routes
 	
 	// User routes
-	// protected.HandleFunc("/users", handlers.GetAllUser)
-	// protected.HandleFunc("/user/{id}", handlers.GetUser)
+	protected.HandleFunc("/users", handlers.GetAllUser)
+	protected.HandleFunc("/user/{id}", handlers.GetUser)
 	// protected.HandleFunc("/user/{id}", handlers.UpdateUser).Methods("PUT")
 
 	// Item routes
-	// protected.HandleFunc("/items", handlers.GetAllItems)
+	protected.HandleFunc("/items", handlers.GetAllItems)
 	// protected.HandleFunc("/items", handlers.CreateItem).Methods("POST")
 	// protected.HandleFunc("/items/{id}", handlers.GetItem)
 	// protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")

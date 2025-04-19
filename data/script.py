@@ -165,6 +165,47 @@ def generate_reviews(users, num_reviews=1500):
                 ['r_id', 'r_comment', 'r_star', 'u_id'])
     return reviews
 
+def generate_rentals(users, items, num_rentals=20):
+    rentals = []
+    statuses = ['pending', 'approved', 'rejected', 'completed', 'cancelled']
+    
+    for i in range(num_rentals):
+        # Pick random item and ensure it's available
+        item = random.choice([item for item in items if item['i_available']])
+        
+        # Pick random renter and owner (different users)
+        renter = random.choice(users)
+        owner = random.choice([u for u in users if u['u_id'] != renter['u_id']])
+        
+        # Generate random dates within the last year
+        start_date = fake.date_time_between(start_date='-30d', end_date='+30d')
+        end_date = start_date + timedelta(days=random.randint(1, 14))  # 1-14 days rental
+        
+        # Calculate total price based on item price and duration
+        duration_days = (end_date - start_date).days
+        total_price = item['i_price'] * duration_days  # Price per day
+        
+        rental = {
+            'rental_id': i + 1,
+            'i_id': item['i_id'],
+            'renter_id': renter['u_id'],
+            'owner_id': owner['u_id'],
+            'start_date': start_date.isoformat(),
+            'end_date': end_date.isoformat(),
+            'status': random.choice(statuses),
+            'total_price': total_price,
+            'created_at': fake.date_time_between(
+                start_date='-60d',
+                end_date=start_date
+            ).isoformat()
+        }
+        rentals.append(rental)
+    
+    save_to_csv(rentals, 'rentals.csv',
+                ['rental_id', 'i_id', 'renter_id', 'owner_id', 
+                 'start_date', 'end_date', 'status', 'total_price', 'created_at'])
+    return rentals
+
 def main():
     print("Starting data generation...")
     users = generate_users()
@@ -173,6 +214,7 @@ def main():
     items = generate_items(users, categories)
     transactions = generate_transactions(users, items)
     reviews = generate_reviews(users)
+    rentals = generate_rentals(users, items, 20)
     print("\nData generation complete! New quantities:")
     print(f"Users: 500 (10x)")
     print(f"Addresses: ~750 (10x)")
@@ -180,6 +222,7 @@ def main():
     print(f"Items: 1000 (10x)")
     print(f"Transactions: 2000 (10x)")
     print(f"Reviews: 1500 (10x)")
+    print(f"Rentals: 20")
 
 if __name__ == "__main__":
     main()

@@ -8,6 +8,22 @@ CREATE TABLE users (
     u_password VARCHAR(255) NOT NULL
 );
 
+-- New table for available rental items
+CREATE TABLE rentals (
+    rental_id SERIAL PRIMARY KEY,
+    i_id INT NOT NULL,
+    renter_id INT NOT NULL,
+    owner_id INT NOT NULL,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'approved', 'rejected', 'completed', 'cancelled')),
+    total_price INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (i_id) REFERENCES items(i_id),
+    FOREIGN KEY (renter_id) REFERENCES users(u_id),
+    FOREIGN KEY (owner_id) REFERENCES users(u_id)
+);
+
 CREATE TABLE addresses (
     a_id INT PRIMARY KEY,
     u_id INT NOT NULL,

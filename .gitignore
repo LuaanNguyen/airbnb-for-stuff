@@ -1,4 +1,5 @@
 venv/
 .vscode/
 backend/.env
+data/venv/
 *.env # ignore env at any depth
