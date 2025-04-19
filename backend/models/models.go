@@ -58,3 +58,18 @@ func GetAllItems() ([]Item, error) {
 
 	return items, nil
 }
+
+// GetUserByEmail retrieves a user email for login 
+func GetUserByEmail(email string) (User, error) {
+	var user User 
+	err := db.DB.QueryRow(`
+		SELECT u_id, u_email, u_phone_number, u_first_name, u_last_name, u_nick_name, u_password 
+        FROM users 
+        WHERE u_email = $1`, email).
+		Scan(&user.ID, &user.Email, &user.PhoneNumber, &user.FirstName, &user.LastName, &user.NickName, &user.Password)
+	if err != nil {
+		return User{}, fmt.Errorf("error querying user: %v", err)
+	}
+
+	return user, nil
+}

@@ -15,11 +15,11 @@ func Router(db *sql.DB) *mux.Router {
 	router.Use(middleware.EnableCORS)
 
 	// Public routes (no auth required)
-	router.HandleFunc("/api/healthcheck", handlers.HealthCheck)
-	router.HandleFunc("/api/user/login", handlers.Login)
-	router.HandleFunc("/api/users", handlers.GetAllUser)
+	router.HandleFunc("/healthcheck", handlers.HealthCheck)
+	router.HandleFunc("/login", handlers.Login)
+	router.HandleFunc("/users", handlers.GetAllUser)
 
-	// Protected routes
+	// Protected routes with /api/ prefix
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.AuthMiddleware)  // Auth only for protected routes
 	
