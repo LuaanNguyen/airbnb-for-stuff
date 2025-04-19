@@ -1,61 +1,23 @@
-package middleware
+package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"strconv"
 
+	"github.com/LuaanNguyen/backend/models"
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" // postgres golang driver
 )
 
 // response format
 type Response struct {
 	ID      int64  `json:"id,omitempty"`
-    Message string `json:"message,omitempty"`
-}
-
-//------------------------- HTTP functions ----------------
-
-// create a DB connection 
-func CreateConnection() *sql.DB {
-	fmt.Println("Connecting to Postgres...")
-	
-	// load .env file 
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// open db connection 
-	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URL"))
-	if err != nil {
-		panic(err)
-	}
-
-	// ping the DB
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Successfully connected!")
-    // return the connection
-    return db
+	Message string `json:"message,omitempty"`
 }
 
 // Check health
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	db := CreateConnection() // establish connection with 
-	defer db.Close()
-
-	resp := Response {
+	resp := Response{
 		Message: "Hello, you have successfully connected to Postgres 🫶",
 	}
 
@@ -63,14 +25,13 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-
 // Get all users 
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// get all the users in the db 
-	users, err := getAllUsers()
+	users, err := models.GetAllUsers()
 	if err != nil {
 		http.Error(w, "Failed to retrieve all users", http.StatusInternalServerError)
 		return
@@ -94,9 +55,10 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	user, err := getUser(int64(id))
+	user, err := models.GetUser(int64(id))
 	if err != nil {
 		http.Error(w, "Failed to retrieve user", http.StatusInternalServerError)
+		return
 	}
 
 	// send user with matching id
@@ -107,12 +69,52 @@ func GetAllItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	items, err := getAllItems()
+	items, err := models.GetAllItems()
 	if err != nil {
 		http.Error(w, "Failed to retrieve all items", http.StatusInternalServerError)
 		return
 	}
 
 	json.NewEncoder(w).Encode(items)
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement login handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement update user handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func CreateItem(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement create item handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func GetItem(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement get item handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func UpdateItem(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement update item handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func DeleteItem(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement delete item handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func SearchItems(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement search items handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
+}
+
+func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement get available items handler
+	http.Error(w, "Not implemented", http.StatusNotImplemented)
 }
 
