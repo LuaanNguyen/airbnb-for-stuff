@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/LuaanNguyen/backend/middleware"
 	"github.com/LuaanNguyen/backend/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
@@ -62,6 +63,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// -------------- Get all items --------------
 func GetAllItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -132,6 +134,38 @@ func Login(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(response)
 }
 
+// -------------- Get avaialble items for rent --------------
+func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
+    items, err := models.GetAvailableItemsWithOwners()
+    if err != nil {
+        http.Error(w, "Failed to fetch items", http.StatusInternalServerError)
+        return
+    }
+    json.NewEncoder(w).Encode(items)
+}
+
+
+// -------------- Get new rental request --------------
+func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
+    var req models.RentalRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request", http.StatusBadRequest)
+        return
+    }
+    
+    // Get user ID from JWT token
+    userID, _ := middleware.GetUserIDFromContext(r)
+    req.RenterID = int64(userID)
+    
+    if err := models.CreateRentalRequest(&req); err != nil {
+        http.Error(w, "Failed to create rental request", http.StatusInternalServerError)
+        return
+    }
+    
+    json.NewEncoder(w).Encode(req)
+}
+
+
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// TODO: Implement update user handler
 	http.Error(w, "Not implemented", http.StatusNotImplemented)
@@ -162,8 +196,4 @@ func SearchItems(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not implemented", http.StatusNotImplemented)
 }
 
-func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement get available items handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
-}
 

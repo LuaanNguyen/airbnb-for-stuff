@@ -47,12 +47,18 @@ CREATE TABLE items (
     i_description TEXT NOT NULL,
     i_image BYTEA, -- nullable
     c_id INT NOT NULL,
+    owner_id INT NOT NULL,
     i_price INT NOT NULL,
     i_date_listed TIMESTAMP NOT NULL,
     i_quantity INT NOT NULL,
     i_available BOOLEAN NOT NULL,
-    FOREIGN KEY (c_id) REFERENCES categories(c_id)
+    FOREIGN KEY (c_id) REFERENCES categories(c_id),
+    FOREIGN KEY (owner_id) REFERENCES users(u_id)
 );
+
+-- Add indexes for better performance
+CREATE INDEX idx_items_available ON items(i_available);
+CREATE INDEX idx_items_owner ON items(owner_id);
 
 CREATE TYPE transaction_type AS ENUM ('Purchase', 'Sale', 'Refund', 'Rental');
 
@@ -74,3 +80,9 @@ CREATE TABLE reviews (
     u_id INT NOT NULL,
     FOREIGN KEY (u_id) REFERENCES users(u_id)
 );
+
+-- Add indexes for better performance
+CREATE INDEX idx_rentals_item ON rentals(i_id);
+CREATE INDEX idx_rentals_status ON rentals(status);
+CREATE INDEX idx_rentals_dates ON rentals(start_date, end_date);
+

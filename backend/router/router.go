@@ -10,15 +10,13 @@ import (
 
 func Router(db *sql.DB) *mux.Router {
 	router := mux.NewRouter()
+	router.Use(middleware.EnableCORS) // Apply CORS middleware globally
 
-	// Apply CORS middleware globally
-	router.Use(middleware.EnableCORS)
-
-	// Public routes (no auth required)
+	//  -------------- Public routes (no auth required)  --------------
 	router.HandleFunc("/healthcheck", handlers.HealthCheck)
 	router.HandleFunc("/login", handlers.Login)
 
-	// Protected routes with /api/ prefix
+	// -------------- Protected routes with /api/ prefix  --------------
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.AuthMiddleware)  // Auth only for protected routes
 	
@@ -29,12 +27,17 @@ func Router(db *sql.DB) *mux.Router {
 
 	// Item routes
 	protected.HandleFunc("/items", handlers.GetAllItems)
+	protected.HandleFunc("/items/available", handlers.GetAvailableItems).Methods("GET")
 	// protected.HandleFunc("/items", handlers.CreateItem).Methods("POST")
 	// protected.HandleFunc("/items/{id}", handlers.GetItem)
 	// protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")
 	// protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE")
 	// protected.HandleFunc("/items/search", handlers.SearchItems)
 	// protected.HandleFunc("/items/available", handlers.GetAvailableItems)
+
+	// Rental routes
+	protected.HandleFunc("/rentals", handlers.CreateRentalRequest).Methods("POST")
+	//protected.HandleFunc("/rentals/my", handlers.GetMyRentals).Methods("GET")
 
 	// Category routes
 	//protected.HandleFunc("/categories", handlers.GetAllCategories)
