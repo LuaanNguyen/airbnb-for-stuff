@@ -165,6 +165,20 @@ func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(req)
 }
 
+// Get all categories 
+func GetAllCategories(w http. ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	categories, err := models.GetAllCategories()
+	if err != nil {
+		http.Error(w, "Failed to retrieve all users", http.StatusInternalServerError)
+		return
+	}
+	// send all users as response
+	json.NewEncoder(w).Encode(categories)
+	
+}
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// TODO: Implement update user handler

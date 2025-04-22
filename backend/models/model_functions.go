@@ -142,3 +142,24 @@ func CreateRentalRequest(rental *RentalRequest) error {
     
     return err
 }
+
+
+// -------------- Get all category--------------
+func GetAllCategories() ([]Category, error) {
+    var categories []Category
+    rows, err := db.DB.Query(`SELECT * FROM categories`)
+    if err != nil {
+        return nil, fmt.Errorf("error querying categories: %v", err )
+    }
+
+    for rows.Next() {
+		var m Category
+		err := rows.Scan(&m.ID, &m.Name, &m.Description)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning category: %v", err)
+		}
+		categories = append(categories, m)
+	}
+
+	return categories, nil
+}

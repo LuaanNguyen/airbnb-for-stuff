@@ -40,7 +40,7 @@ func Router(db *sql.DB) *mux.Router {
 	//protected.HandleFunc("/rentals/my", handlers.GetMyRentals).Methods("GET")
 
 	// Category routes
-	//protected.HandleFunc("/categories", handlers.GetAllCategories)
+	protected.HandleFunc("/categories", handlers.GetAllCategories)
 	//protected.HandleFunc("/categories/{id}/items", handlers.GetItemsByCategory)
 
 	// Transaction routes
