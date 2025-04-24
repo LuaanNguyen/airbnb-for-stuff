@@ -23,13 +23,12 @@ func Router(db *sql.DB) *mux.Router {
 	// User routes
 	protected.HandleFunc("/users", handlers.GetAllUser)
 	protected.HandleFunc("/user/{id}", handlers.GetUser)
-	// protected.HandleFunc("/user/{id}", handlers.UpdateUser).Methods("PUT")
 
 	// Item routes
 	protected.HandleFunc("/items", handlers.GetAllItems)
 	protected.HandleFunc("/create-item", handlers.CreateItem).Methods("POST")
 	protected.HandleFunc("/items/available", handlers.GetAvailableItems).Methods("GET")
-	// protected.HandleFunc("/items/{id}", handlers.GetItem)
+	protected.HandleFunc("/items/{id}", handlers.GetItem)
 	// protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")
 	// protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE")
 	// protected.HandleFunc("/items/search", handlers.SearchItems)

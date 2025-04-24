@@ -193,3 +193,14 @@ func CreateItem(item *Item) error {
     
     return nil
 }
+
+// -------------- GetItem retrieves a single item by ID --------------
+func GetItem(id int64) (Item, error) {
+	var i Item
+	err := db.DB.QueryRow("SELECT i_id, i_name, i_description, i_price, i_date_listed, i_quantity, i_available FROM items WHERE i_id = $1", id).
+		Scan(&i.ID, &i.Name, &i.Description, &i.Price, &i.DateListed, &i.Quantity, &i.Available)
+	if err != nil {
+		return Item{}, fmt.Errorf("error querying user: %v", err)
+	}
+	return i, nil
+}

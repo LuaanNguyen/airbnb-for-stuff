@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -177,10 +176,6 @@ func GetAllCategories(w http. ResponseWriter, r *http.Request) {
 	
 }
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement update user handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
-}
 
 // -------------- Create new rental items --------------
 func CreateItem(w http.ResponseWriter, r *http.Request) {
@@ -214,8 +209,25 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetItem(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement get item handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
+	w.Header().Set("Content-Type", "application/json")
+
+	// get the userid from the request params, key is "id"
+	params := mux.Vars(r)
+
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, "Invalid item ID", http.StatusBadRequest)
+		return
+	}
+	
+	item, err := models.GetItem(int64(id))
+	if err != nil {
+		http.Error(w, "Failed to retrieve user", http.StatusInternalServerError)
+		return
+	}
+
+	// send user with matching id
+	json.NewEncoder(w).Encode(item)
 }
 
 func UpdateItem(w http.ResponseWriter, r *http.Request) {
