@@ -14,3 +14,14 @@ type Item struct {
     Quantity    int        `json:"quantity" db:"i_quantity"`
     Available   bool       `json:"available" db:"i_available"`
 }
+
+
+// Parse the request body
+type ItemData struct {
+    Name        string  `json:"name"`
+    Description string  `json:"description"`
+    Image       *[]byte `json:"image,omitempty"`
+    Price       int     `json:"price"`
+    Quantity    int     `json:"quantity"`
+    Available   bool    `json:"available"`
+}

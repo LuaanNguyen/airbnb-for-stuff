@@ -183,6 +183,25 @@ Get available items for rent with owner information. Requires authentication.
 ]
 ```
 
+**DELETE** `/api/items/{id}`  
+Delete an item by ID. Requires authentication and ownership of the item.
+
+**Response**: 200 OK
+
+```json
+{
+  "message": "Item successfully deleted"
+}
+```
+
+**Errors**:
+
+- 400: Invalid item ID
+- 401: Unauthorized - Authentication required
+- 403: Forbidden - Not the owner of the item
+- 404: Item not found
+- 500: Failed to delete item
+
 ### Categories
 
 **GET** `/api/categories`  

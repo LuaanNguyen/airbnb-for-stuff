@@ -208,6 +208,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(item)
 }
 
+// -------------- Get item by ID --------------
 func GetItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -230,13 +231,44 @@ func GetItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(item)
 }
 
+// -------------- Update Item by ID --------------
 func UpdateItem(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement update item handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
+	w.Header().Set("Content-Type", "application/json")
+	
+	// Get the item ID from URL params
+	vars := mux.Vars(r)
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid item ID", http.StatusBadRequest)
+		return
+	}
 
+	var itemData models.ItemData;
+	
+	if err := json.NewDecoder(r.Body).Decode(&itemData); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
 
+	item, err := models.UpdateItem(
+		id,
+		itemData.Name,
+		itemData.Description,
+		itemData.Image,
+		itemData.Price,
+		itemData.Quantity,
+		itemData.Available,
+	)
+	
+	if err != nil {
+		http.Error(w, "Failed to update item", http.StatusInternalServerError)
+		return
+	}
+	
+	json.NewEncoder(w).Encode(item)
 }
 
+// -------------- Get item by ID --------------
 func DeleteItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)

@@ -219,3 +219,23 @@ func DeleteItem(id int64) (bool, error) {
     
     return rowsAffected > 0, nil
 }
+
+// -------------- Update an Item by its ID  --------------
+func UpdateItem(id int64, name string, description string, image *[]byte, price int, quantity int, available bool) (Item, error) {
+    var i Item 
+
+    query := ` 
+        UPDATE items 
+        SET i_name = $1, i_description = $2, i_image = $3, i_price = $4, i_quantity = $5, i_available = $6
+        WHERE i_id = $7
+        RETURNING i_id, i_name, i_description, i_price, i_date_listed, i_quantity, i_available;
+    `
+
+    err := db.DB.QueryRow(query, name, description, image, price, quantity, available, id).Scan(
+        &i.ID, &i.Name, &i.Description, &i.Price, &i.DateListed, &i.Quantity, &i.Available)
+    if err != nil {
+        return Item{}, fmt.Errorf("error updating item: %v", err)
+    }
+
+    return i, nil 
+} 
