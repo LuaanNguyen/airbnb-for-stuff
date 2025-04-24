@@ -1,13 +1,48 @@
-## Run Svelte
+# AirBnb For Stuff
+
+Built with [Svelte](https://svelte.dev/), [GO](https://go.dev/), [PostgresSQL](https://www.postgresql.org/).
+
+This project is an simple marketplace that allows users to rent out various personal items.
+
+## App Structure
+
+```
+├── backend
+│   ├── main.go
+|   ├── go.mod
+|   ├── go.sum
+|   ├── .env
+│   ├── db                  // for DB connections
+│   │   ├── db.go.go
+│   │   ├── queries.sql
+│   │   ├── schema.sql      // DB schema
+│   ├── handlers          // API core handlers
+│   │   ├── handlers.go
+|   ├── middleware          // auth, CORS
+│   │   ├── auth.go
+│   │   ├── cors.go
+│   └── models
+│   |    └── model_functions.go     // DB functions
+│   |    └── ...                    // Models for our application
+|   |
+├── frontend    //svelte app
+├── data    // mock data generation
+└── backup  // application's data
+```
+
+## Run Svelte app
 
 ```
 cd frontend
-bun run dev --open
+npm i
+npm run dev
+npm run build
+npm run preview
 ```
 
 Check `localhost:5173/`
 
-## Run server
+## Run GO app
 
 Create a `.env` file in `/backend` with:
 
@@ -37,34 +72,4 @@ python script.py
 
 Mock data should be generated in `/fake_data_csv`
 
-## TODOS
-
-User Management
-
-- [ ] `/api/user/register` - For new user registration
-- [ ] `/api/user/login` - For user authentication
-- [ ] `/api/user/{id}` - PUT endpoint for updating user profile
-
-Item Management
-
-- [ ] Full CRUD operations
-- [ ] `/api/items/search` - For searching items with filters
-- [ ] `/api/items/available` - For getting available items
-- [ ] `/api/items/{id}` - For individual items operations
-
-Category Management:
-
-- [ ] `/api/categories` - Get all categories
-- [ ] `/api/categories/{id}/items` - Get items by category
-
-Transaction Management
-
-- [ ] `/api/transactions` - Create new transactions
-- [ ] `/api/user/{id}/transactions` - Get user's transactiopn history
-- [ ] `/api/transactions/{id}` - Get and update specific transactions
-
-Review Systems
-
-- [ ] `/api/reviews` - Create new reviews
-- [ ] `/api/items/{id}/reviews` - Get reviews for an item
-- [ ] `/api/user/{id}/reviews` - Get reviews by a user
+### 💿 Backup data are stored in `data/`
