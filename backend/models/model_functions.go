@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/LuaanNguyen/backend/db"
 )
@@ -162,4 +163,37 @@ func GetAllCategories() ([]Category, error) {
 	}
 
 	return categories, nil
+}
+
+
+// -------------- Create a new item --------------
+func CreateItem(item *Item) error {
+    query := `
+        INSERT INTO items (i_name, i_description, i_image, c_id, owner_id, i_price, i_date_listed, i_quantity, i_available)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING i_id`
+
+    // Set the date listed to current time if not provided 
+    if item.DateListed.IsZero() {
+        item.DateListed = time.Now()
+    }
+
+    err := db.DB.QueryRow(
+        query,
+        item.Name,
+        item.Description,
+        item.Image,
+        item.CategoryID,
+        item.OwnerID,
+        item.Price,
+        item.DateListed,
+        item.Quantity,
+        item.Available,
+    ).Scan(&item.ID)
+    
+    if err != nil {
+        return fmt.Errorf("error creating item: %v", err)
+    }
+    
+    return nil
 }
