@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/LuaanNguyen/backend/db"
 )
@@ -171,12 +170,9 @@ func CreateItem(item *Item) error {
     query := `
         INSERT INTO items (i_name, i_description, i_image, c_id, owner_id, i_price, i_date_listed, i_quantity, i_available)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        RETURNING i_id`
+        RETURNING i_id`  // This will return the auto-generated ID
 
-    // Set the date listed to current time if not provided 
-    if item.DateListed.IsZero() {
-        item.DateListed = time.Now()
-    }
+    // Notice i_id is NOT in the field list above
 
     err := db.DB.QueryRow(
         query,
