@@ -233,11 +233,33 @@ func GetItem(w http.ResponseWriter, r *http.Request) {
 func UpdateItem(w http.ResponseWriter, r *http.Request) {
 	// TODO: Implement update item handler
 	http.Error(w, "Not implemented", http.StatusNotImplemented)
+
+
 }
 
 func DeleteItem(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement delete item handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, "Invalid item ID", http.StatusBadRequest)
+		return
+	}
+
+	isDeleted, err := models.DeleteItem(int64(id))
+	if err != nil {
+		http.Error(w, "Failed to delete item", http.StatusInternalServerError)
+		return 
+	}
+
+	if !isDeleted {
+		http.Error(w, "Item not found", http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Item successfully deleted",
+	})
 }
 
 func SearchItems(w http.ResponseWriter, r *http.Request) {

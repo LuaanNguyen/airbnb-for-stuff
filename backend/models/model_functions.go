@@ -204,3 +204,18 @@ func GetItem(id int64) (Item, error) {
 	}
 	return i, nil
 }
+
+// -------------- Delete an item by its ID --------------
+func DeleteItem(id int64) (bool, error) {
+    result, err := db.DB.Exec("DELETE FROM items WHERE i_id = $1", id)
+    if err != nil {
+        return false, err
+    }
+    
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return false, err
+    }
+    
+    return rowsAffected > 0, nil
+}
