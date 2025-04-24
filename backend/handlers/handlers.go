@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -208,6 +209,7 @@ func CreateItem(w http.ResponseWriter, r *http.Request) {
 		return 
 	}
 
+	fmt.Println(item)
 	// return the created item
 	json.NewEncoder(w).Encode(item)
 }
