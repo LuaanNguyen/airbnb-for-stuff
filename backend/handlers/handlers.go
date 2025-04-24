@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -26,7 +27,6 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 // -------------- Get all users --------------
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// get all the users in the db 
 	users, err := models.GetAllUsers()
@@ -42,7 +42,6 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 // -------------- Get user by ID --------------
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// get the userid from the request params, key is "id"
 	params := mux.Vars(r)
@@ -66,7 +65,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 // -------------- Get all items --------------
 func GetAllItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	items, err := models.GetAllItems()
 	if err != nil {
@@ -165,10 +163,9 @@ func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(req)
 }
 
-// Get all categories 
+// -------------- Get all categories --------------
 func GetAllCategories(w http. ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	categories, err := models.GetAllCategories()
 	if err != nil {
@@ -185,9 +182,35 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not implemented", http.StatusNotImplemented)
 }
 
+// -------------- Create new rental items --------------
 func CreateItem(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement create item handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
+	w.Header().Set("Content-Type", "application/json")
+
+	// parse request body 
+	var item models.Item
+	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return 
+	}
+
+	// get the user ID from JWT token and set as owner
+	userID, _ := middleware.GetUserIDFromContext(r)
+	item.OwnerID = int64(userID)
+
+
+	// Set defaults 
+	if item.DateListed.IsZero() {
+		item.DateListed = time.Now()
+	}
+
+	// Create the item 
+	if err := models.CreateItem(&item); err != nil {
+		http.Error(w, "Failed to create item: "+err.Error(), http.StatusInternalServerError)
+		return 
+	}
+
+	// return the created item
+	json.NewEncoder(w).Encode(item)
 }
 
 func GetItem(w http.ResponseWriter, r *http.Request) {

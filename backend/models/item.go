@@ -8,6 +8,7 @@ type Item struct {
     Description string     `json:"description" db:"i_description"`
     Image       *[]byte    `json:"image,omitempty" db:"i_image"` // nullable
     CategoryID  int64      `json:"category_id" db:"c_id"`
+    OwnerID     int64      `json:"owner_id" db:"owner_id"`
     Price       int        `json:"price" db:"i_price"`
     DateListed  time.Time  `json:"date_listed" db:"i_date_listed"`
     Quantity    int        `json:"quantity" db:"i_quantity"`

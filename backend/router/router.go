@@ -27,8 +27,8 @@ func Router(db *sql.DB) *mux.Router {
 
 	// Item routes
 	protected.HandleFunc("/items", handlers.GetAllItems)
+	protected.HandleFunc("/create-item", handlers.CreateItem).Methods("POST")
 	protected.HandleFunc("/items/available", handlers.GetAvailableItems).Methods("GET")
-	// protected.HandleFunc("/items", handlers.CreateItem).Methods("POST")
 	// protected.HandleFunc("/items/{id}", handlers.GetItem)
 	// protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")
 	// protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE")
