@@ -1,41 +1,25 @@
-<script>
+<script lang="ts">
   import { goto } from '$app/navigation';
+  import { login } from '$lib/services/api';
+  import { setAuth } from '$lib/auth';
+  import type { LoginResponse } from '$lib/types';
   
   let email = '';
   let password = '';
   let error = '';
   let loading = false;
-  
-  // Backend API URL - update this to match your Go server
-  const API_URL = 'http://localhost:8080'; // or whatever port your Go server is running on
 
   async function handleLogin() {
     loading = true;
     error = '';
     
     try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const data = await login(email, password) as LoginResponse;
       
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(errorData || 'Login failed');
-      }
+      // Set auth data using our helper function
+      setAuth(data);
       
-      const data = await response.json();
-      
-      // Store JWT token and user info in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.userID);
-      localStorage.setItem('firstName', data.firstName);
-      localStorage.setItem('lastName', data.lastName);
-      
-      // Redirect to home page
+      // Redirect to items page
       goto('/items');
     } catch (err) {
       error = err instanceof Error ? err.message : 'An unknown error occurred';

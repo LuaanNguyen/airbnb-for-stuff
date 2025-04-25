@@ -1,13 +1,24 @@
+<script lang="ts">
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+  import { isAuthenticated } from '$lib/auth';
 
+  onMount(() => {
+    if ($isAuthenticated) {
+      goto('/items');
+    } else {
+      goto('/login');
+    }
+  });
+</script>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <h1 class="text-3xl font-bold mb-8">AirBnb for Stuff 📦</h1>
-
-  <a href="/login" class="mx-auto border p-2 hover:bg-black hover:text-white">Login</a>
-    <p class="mt-10">
-      Visit <a class="text-blue-600 underline" href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation.
-    </p>
+<div class="flex items-center justify-center h-screen">
+  <div class="text-center">
+    <h1 class="text-2xl font-bold mb-4">Welcome to Airbnb for Stuff</h1>
+    <p class="text-gray-600 mb-6">Redirecting you to the right place...</p>
+    <div class="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent mx-auto"></div>
   </div>
+</div>
 
   
 

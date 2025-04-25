@@ -13,32 +13,32 @@ func Router(db *sql.DB) *mux.Router {
 	router.Use(middleware.EnableCORS) // Apply CORS middleware globally
 
 	//  -------------- Public routes (no auth required)  --------------
-	router.HandleFunc("/healthcheck", handlers.HealthCheck).Methods("GET")
-	router.HandleFunc("/login", handlers.Login).Methods("POST")
+	router.HandleFunc("/healthcheck", handlers.HealthCheck).Methods("GET", "OPTIONS")
+	router.HandleFunc("/login", handlers.Login).Methods("POST", "OPTIONS")
 
 	// -------------- Protected routes with /api/ prefix  --------------
 	protected := router.PathPrefix("/api").Subrouter()
 	protected.Use(middleware.AuthMiddleware)  // Auth only for protected routes
 	
 	// User routes
-	protected.HandleFunc("/users", handlers.GetAllUser).Methods("GET")
-	protected.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
+	protected.HandleFunc("/users", handlers.GetAllUser).Methods("GET", "OPTIONS")
+	protected.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET", "OPTIONS")
 
 	// Item routes
-	protected.HandleFunc("/items", handlers.GetAllItems).Methods("GET")
-	protected.HandleFunc("/items", handlers.CreateItem).Methods("POST")
-	protected.HandleFunc("/items/available", handlers.GetAvailableItems).Methods("GET")
-	protected.HandleFunc("/items/{id}", handlers.GetItem).Methods("GET")
-	protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")
-	protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE")
-	protected.HandleFunc("/items/search", handlers.SearchItems)
+	protected.HandleFunc("/items", handlers.GetAllItems).Methods("GET", "OPTIONS")
+	protected.HandleFunc("/items", handlers.CreateItem).Methods("POST", "OPTIONS")
+	protected.HandleFunc("/items/available", handlers.GetAvailableItems).Methods("GET", "OPTIONS")
+	protected.HandleFunc("/items/{id}", handlers.GetItem).Methods("GET", "OPTIONS")
+	protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT", "OPTIONS")
+	protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE", "OPTIONS")
+	protected.HandleFunc("/items/search", handlers.SearchItems).Methods("GET", "OPTIONS")
 
 	// Rental routes
-	protected.HandleFunc("/rentals", handlers.CreateRentalRequest).Methods("POST")
+	protected.HandleFunc("/rentals", handlers.CreateRentalRequest).Methods("POST", "OPTIONS")
 	//protected.HandleFunc("/rentals/my", handlers.GetMyRentals).Methods("GET")
 
 	// Category routes
-	protected.HandleFunc("/categories", handlers.GetAllCategories).Methods("GET")
+	protected.HandleFunc("/categories", handlers.GetAllCategories).Methods("GET", "OPTIONS")
 	//protected.HandleFunc("/categories/{id}/items", handlers.GetItemsByCategory)
 
 	// Transaction routes

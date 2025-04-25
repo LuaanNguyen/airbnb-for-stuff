@@ -133,6 +133,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // -------------- Get avaialble items for rent --------------
 func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	
     items, err := models.GetAvailableItemsWithOwners()
     if err != nil {
         http.Error(w, "Failed to fetch items", http.StatusInternalServerError)
@@ -144,6 +148,10 @@ func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
 
 // -------------- Get new rental request --------------
 func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+
     var req models.RentalRequest
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
         http.Error(w, "Invalid request", http.StatusBadRequest)
