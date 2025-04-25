@@ -31,7 +31,7 @@ func Router(db *sql.DB) *mux.Router {
 	protected.HandleFunc("/items/{id}", handlers.GetItem).Methods("GET")
 	protected.HandleFunc("/items/{id}", handlers.UpdateItem).Methods("PUT")
 	protected.HandleFunc("/items/{id}", handlers.DeleteItem).Methods("DELETE")
-	// protected.HandleFunc("/items/search", handlers.SearchItems)
+	protected.HandleFunc("/items/search", handlers.SearchItems)
 
 	// Rental routes
 	protected.HandleFunc("/rentals", handlers.CreateRentalRequest).Methods("POST")
