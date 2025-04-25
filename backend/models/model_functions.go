@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/LuaanNguyen/backend/db"
 )
@@ -239,3 +240,75 @@ func UpdateItem(id int64, name string, description string, image *[]byte, price 
 
     return i, nil 
 } 
+
+
+// -------------- Search an iten  --------------
+func SearchItems(params SearchParams) ([]Item, error) {
+    query := `
+        SELECT i_id, i_name, i_description, i_image, c_id, owner_id, i_price, i_date_listed, i_quantity, i_available
+        FROM items 
+        WHERE 1 = 1
+    `
+
+    var args []interface{}
+    argPosition := 1
+
+    // Add search condition based on parameters 
+    if params.Query != "" {
+        query += fmt.Sprintf(" AND (LOWER(i_name) LIKE $%d OR LOWER(i_description) LIKE $%d)", 
+            argPosition, argPosition)
+        args = append(args, "%"+strings.ToLower(params.Query)+"%")
+        argPosition++
+    }
+
+    if params.CategoryID != nil {
+        query += fmt.Sprintf(" AND c_id = $%d", argPosition)
+        args = append(args, *params.CategoryID)
+        argPosition++
+    }
+
+    if params.MinPrice != nil {
+        query += fmt.Sprintf(" AND i_price >= $%d", argPosition)
+        args = append(args, *params.MinPrice)
+        argPosition++
+    }
+
+    if params.MaxPrice != nil {
+        query += fmt.Sprintf(" AND i_price <= $%d", argPosition)
+        args = append(args, *params.MaxPrice)
+        argPosition++
+    }
+
+    if params.Available != nil {
+        query += fmt.Sprintf(" AND i_available = $%d", argPosition)
+        args = append(args, *params.Available)
+        argPosition++
+    }
+
+    // Add ordering
+    query += " ORDER BY i_date_listed DESC"
+
+
+    // Execute query
+    rows, err := db.DB.Query(query, args...)
+    if err != nil {
+        return nil, fmt.Errorf("error searching items: %v", err)
+    }
+    defer rows.Close()
+
+    var items []Item
+    for rows.Next() {
+        var i Item
+        err := rows.Scan(
+            &i.ID, &i.Name, &i.Description, &i.Image, &i.CategoryID, 
+            &i.OwnerID, &i.Price, &i.DateListed, &i.Quantity, &i.Available,
+        )
+        if err != nil {
+            return nil, fmt.Errorf("error scanning item: %v", err)
+        }
+        items = append(items, i)
+    }
+
+    return items, nil
+
+}

@@ -133,6 +133,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // -------------- Get avaialble items for rent --------------
 func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	
     items, err := models.GetAvailableItemsWithOwners()
     if err != nil {
         http.Error(w, "Failed to fetch items", http.StatusInternalServerError)
@@ -144,6 +148,10 @@ func GetAvailableItems(w http.ResponseWriter, r *http.Request) {
 
 // -------------- Get new rental request --------------
 func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+
     var req models.RentalRequest
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
         http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -294,9 +302,47 @@ func DeleteItem(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// -------------- Search an Item --------------
 func SearchItems(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement search items handler
-	http.Error(w, "Not implemented", http.StatusNotImplemented)
-}
+    w.Header().Set("Content-Type", "application/json")
 
+    // Parse query parameters
+    query := r.URL.Query().Get("query")
+    
+    var params models.SearchParams
+    params.Query = query
+
+    // Parse optional filters
+    if categoryID := r.URL.Query().Get("category_id"); categoryID != "" {
+        if catID, err := strconv.Atoi(categoryID); err == nil {
+            params.CategoryID = &catID
+        }
+    }
+
+    if minPrice := r.URL.Query().Get("min_price"); minPrice != "" {
+        if price, err := strconv.Atoi(minPrice); err == nil {
+            params.MinPrice = &price
+        }
+    }
+
+    if maxPrice := r.URL.Query().Get("max_price"); maxPrice != "" {
+        if price, err := strconv.Atoi(maxPrice); err == nil {
+            params.MaxPrice = &price
+        }
+    }
+
+    if available := r.URL.Query().Get("available"); available != "" {
+        isAvailable := available == "true"
+        params.Available = &isAvailable
+    }
+
+    // Perform search
+    items, err := models.SearchItems(params)
+    if err != nil {
+        http.Error(w, "Failed to search items: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(items)
+}
 
