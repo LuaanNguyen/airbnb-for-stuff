@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -13,7 +14,14 @@ import (
 )
 
 // JWT secret key
-var jwtKey = []byte("your-secret-key") // In production, use environment variable
+var jwtKey []byte
+
+func init() {
+	jwtKey = []byte(os.Getenv("JWT_SECRET"))
+	if len(jwtKey) == 0 {
+		jwtKey = []byte("your-secret-key") // Fallback for dev
+	}
+}
 
 // Claims represents the JWT claims
 type Claims struct {
@@ -96,6 +104,15 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		// Check if token starts with "Bearer " prefix and remove it
+		const bearerPrefix = "Bearer "
+		if len(tokenString) > len(bearerPrefix) && tokenString[:len(bearerPrefix)] == bearerPrefix {
+			tokenString = tokenString[len(bearerPrefix):]
+		} else {
+			http.Error(w, "Invalid token format", http.StatusUnauthorized)
 			return
 		}
 
