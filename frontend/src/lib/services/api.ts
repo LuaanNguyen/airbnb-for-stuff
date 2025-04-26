@@ -1,4 +1,12 @@
-import type { Item, User, Category, RentalRequest, SearchParams, ItemWithOwner } from '../types';
+import type {
+	Item,
+	User,
+	Category,
+	RentalRequest,
+	SearchParams,
+	ItemWithOwner,
+	RentalWithDetails
+} from '../types';
 
 const API_URL = 'http://localhost:8080';
 
@@ -209,6 +217,19 @@ export async function createRentalRequest(rental: RentalRequest): Promise<Rental
 		return handleResponse<RentalRequest>(response);
 	} catch (error) {
 		console.error('Error creating rental request:', error);
+		throw error;
+	}
+}
+
+export async function getMyRentals(): Promise<RentalWithDetails[]> {
+	const token = getToken();
+	const options = getCommonOptions(token);
+
+	try {
+		const response = await fetch(`${API_URL}/api/rentals/my`, options);
+		return handleResponse<RentalWithDetails[]>(response);
+	} catch (error) {
+		console.error('Error fetching my rental requests:', error);
 		throw error;
 	}
 }

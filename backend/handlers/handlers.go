@@ -167,6 +167,28 @@ func CreateRentalRequest(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(req)
 }
 
+// -------------- Get the current user's rental requests --------------
+func GetMyRentals(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	
+	// Get user ID from JWT token context
+	userID, err := middleware.GetUserIDFromContext(r)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	
+	// Get user's rental requests
+	rentals, err := models.GetMyRentals(int64(userID))
+	if err != nil {
+		http.Error(w, "Failed to retrieve rental requests: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	
+	// Return the rental requests
+	json.NewEncoder(w).Encode(rentals)
+}
+
 // -------------- Get all categories --------------
 func GetAllCategories(w http. ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

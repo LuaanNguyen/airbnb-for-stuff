@@ -35,11 +35,10 @@ func Router(db *sql.DB) *mux.Router {
 
 	// Rental routes
 	protected.HandleFunc("/rentals", handlers.CreateRentalRequest).Methods("POST", "OPTIONS")
-	//protected.HandleFunc("/rentals/my", handlers.GetMyRentals).Methods("GET")
+	protected.HandleFunc("/rentals/my", handlers.GetMyRentals).Methods("GET", "OPTIONS")
 
 	// Category routes
 	protected.HandleFunc("/categories", handlers.GetAllCategories).Methods("GET", "OPTIONS")
-	//protected.HandleFunc("/categories/{id}/items", handlers.GetItemsByCategory)
 
 	// Transaction routes
 	// protected.HandleFunc("/transactions", handlers.CreateTransaction).Methods("POST")

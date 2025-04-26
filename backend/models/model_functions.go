@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/LuaanNguyen/backend/db"
 )
@@ -311,4 +312,76 @@ func SearchItems(params SearchParams) ([]Item, error) {
 
     return items, nil
 
+}
+
+// -------------- Get rental requests for a specific user --------------
+func GetMyRentals(userID int64) ([]map[string]interface{}, error) {
+    query := `
+        SELECT 
+            r.rental_id, 
+            r.item_id, 
+            i.i_name, 
+            i.i_description,
+            r.start_date, 
+            r.end_date, 
+            r.status, 
+            r.total_price,
+            u.u_first_name || ' ' || u.u_last_name AS owner_name
+        FROM 
+            rentals r
+        JOIN 
+            items i ON r.item_id = i.i_id
+        JOIN 
+            users u ON i.owner_id = u.u_id
+        WHERE 
+            r.renter_id = $1
+        ORDER BY 
+            r.start_date DESC
+    `
+    
+    rows, err := db.DB.Query(query, userID)
+    if err != nil {
+        return nil, fmt.Errorf("error querying rental requests: %v", err)
+    }
+    defer rows.Close()
+    
+    var rentals []map[string]interface{}
+    for rows.Next() {
+        var (
+            rentalID, itemID, totalPrice int64
+            itemName, itemDescription, status, ownerName string
+            startDate, endDate time.Time
+        )
+        
+        err := rows.Scan(
+            &rentalID, 
+            &itemID, 
+            &itemName, 
+            &itemDescription,
+            &startDate, 
+            &endDate, 
+            &status, 
+            &totalPrice,
+            &ownerName,
+        )
+        if err != nil {
+            return nil, fmt.Errorf("error scanning rental: %v", err)
+        }
+        
+        rental := map[string]interface{}{
+            "id":           rentalID,
+            "item_id":      itemID,
+            "item_name":    itemName,
+            "description":  itemDescription,
+            "start_date":   startDate,
+            "end_date":     endDate,
+            "status":       status,
+            "total_price":  totalPrice,
+            "owner_name":   ownerName,
+        }
+        
+        rentals = append(rentals, rental)
+    }
+    
+    return rentals, nil
 }

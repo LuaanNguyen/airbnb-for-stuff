@@ -60,3 +60,15 @@ export interface LoginResponse {
 	first_name: string;
 	last_name: string;
 }
+
+export interface RentalWithDetails {
+	id: number;
+	item_id: number;
+	item_name: string;
+	description: string;
+	start_date: string;
+	end_date: string;
+	status: string;
+	total_price: number;
+	owner_name: string;
+}
