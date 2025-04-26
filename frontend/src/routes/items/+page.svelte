@@ -17,6 +17,8 @@
   let maxPrice: number | null = null;
   let showOnlyAvailable = true;
 
+
+
   onMount(async () => {
     // Check if user is authenticated
     if (!$isAuthenticated) {
@@ -94,11 +96,11 @@
   };
 </script>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <h1 class="text-3xl font-bold text-gray-900 mb-8">Available Items</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
+  <h1 class="text-2xl font-bold text-gray-900 mb-4"> Available Items ✅</h1>
   
   <!-- Search and filters -->
-  <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+  <div class="bg-white p-4  shadow-md mb-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <!-- Search query -->
       <div>
@@ -108,7 +110,7 @@
           id="search"
           bind:value={searchQuery}
           placeholder="Search items..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          class="w-full px-3 py-2 border border-gray-300 "
         />
       </div>
       
@@ -118,7 +120,7 @@
         <select
           id="category"
           bind:value={selectedCategory}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          class="w-full px-3 py-2 border border-gray-300 "
         >
           <option value={null}>All Categories</option>
           {#each categories as category}
@@ -136,7 +138,7 @@
           bind:value={minPrice}
           min="0"
           placeholder="Min price"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          class="w-full px-3 py-2 border border-gray-300 "
         />
       </div>
       
@@ -148,7 +150,7 @@
           bind:value={maxPrice}
           min="0"
           placeholder="Max price"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          class="w-full px-3 py-2 border border-gray-300"
         />
       </div>
     </div>
@@ -162,13 +164,13 @@
       <div class="flex space-x-2">
         <button
           on:click={resetFilters}
-          class="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+          class="px-4 py-2 text-sm border border-gray-300  hover:bg-gray-50"
         >
           Reset
         </button>
         <button
           on:click={handleSearch}
-          class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          class="px-4 py-2 text-sm bg-black text-white  hover:bg-white hover:text-black border"
         >
           Search
         </button>
@@ -197,11 +199,11 @@
           </div>
           
           <div class="p-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2 truncate">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2 truncate">
               {item.name}
             </h2>
             
-            <p class="text-2xl font-bold text-green-600 mb-2">
+            <p class="text-xl font-bold text-green-600 mb-2">
               {formatPrice(item.price)}
             </p>
             
@@ -215,7 +217,7 @@
               </span>
               <button 
                 on:click={() => goto(`/items/rent/${item.id}`)}
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                class="bg-black hover:bg-white text-white hover:text-black border px-4 py-2  text-sm font-medium transition-colors duration-200"
               >
                 Rent Now
               </button>
