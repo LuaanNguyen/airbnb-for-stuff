@@ -161,7 +161,7 @@
     <h1 class="text-3xl font-bold text-gray-900">My Items</h1>
     <button
       on:click={showAddForm}
-      class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+      class="px-4 py-2 bg-black text-white hover:bg-white hover:text-black border"
     >
       Add New Item
     </button>
@@ -307,7 +307,7 @@
       <p class="text-gray-600 mb-4">You don't have any items listed yet.</p>
       <button
         on:click={showAddForm}
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        class="px-4 py-2 bg-black text-white hover:bg-white hover:text-black border"
       >
         Add Your First Item
       </button>

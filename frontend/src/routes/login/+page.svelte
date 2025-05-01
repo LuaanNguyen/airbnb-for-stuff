@@ -4,8 +4,8 @@
   import { setAuth } from '$lib/auth';
   import type { LoginResponse } from '$lib/types';
   
-  let email = '';
-  let password = '';
+  let email = 'johnsonjoshua@example.org';
+  let password = '&qi+O83s*GE3';
   let error = '';
   let loading = false;
 
@@ -62,6 +62,7 @@
         class="w-full px-3 py-2 border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
     </div>
+
     
     <button 
       type="submit" 

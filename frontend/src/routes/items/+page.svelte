@@ -100,7 +100,7 @@
   <h1 class="text-2xl font-bold text-gray-900 mb-4"> Available Items ✅</h1>
   
   <!-- Search and filters -->
-  <div class="bg-white p-4  shadow-md mb-6">
+  <div class="bg-white p-4 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <!-- Search query -->
       <div>
@@ -193,7 +193,7 @@
   {:else}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {#each items as item}
-        <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+        <div class="bg-white  overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
           <div class="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-500">
             No image available
           </div>
@@ -219,7 +219,7 @@
                 on:click={() => goto(`/items/rent/${item.id}`)}
                 class="bg-black hover:bg-white text-white hover:text-black border px-4 py-2  text-sm font-medium transition-colors duration-200"
               >
-                Rent Now
+                Rent Now 
               </button>
             </div>
           </div>

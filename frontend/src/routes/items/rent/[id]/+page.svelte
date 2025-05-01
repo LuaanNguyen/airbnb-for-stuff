@@ -115,7 +115,7 @@
   <div class="mb-4">
     <button 
       on:click={() => goto('/items')}
-      class="text-blue-600 hover:text-blue-800 flex items-center"
+      class=" flex items-center cursor-pointer "
     >
       ← Back to Items
     </button>
@@ -126,15 +126,15 @@
       <div class="text-gray-600">Loading item details...</div>
     </div>
   {:else if error}
-    <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-md mb-6">
+    <div class="bg-red-50 border border-red-200 text-red-800 p-4  mb-6">
       {error}
     </div>
   {:else if item}
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="bg-white overflow-hidden">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
         <!-- Item Image and Details -->
         <div>
-          <div class="bg-gray-100 h-64 flex items-center justify-center text-gray-500 rounded-md mb-4">
+          <div class="bg-gray-100 h-64 flex items-center justify-center text-gray-500  mb-4">
             No image available
           </div>
           
@@ -158,7 +158,7 @@
         </div>
         
         <!-- Rental Form -->
-        <div class="bg-gray-50 p-6 rounded-lg">
+        <div class="bg-gray-50 p-6 ">
           <h2 class="text-xl font-bold text-gray-900 mb-4">Rent This Item</h2>
           
           {#if successMessage}
@@ -178,7 +178,7 @@
                 bind:value={startDate}
                 min={new Date().toISOString().split('T')[0]}
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                class="w-full px-3 py-2 border border-gray-300 "
               />
             </div>
             
@@ -192,12 +192,12 @@
                 bind:value={endDate}
                 min={startDate || new Date().toISOString().split('T')[0]}
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                class="w-full px-3 py-2 border border-gray-300 "
               />
             </div>
             
             {#if calculatedPrice > 0}
-              <div class="bg-blue-50 p-4 rounded-md">
+              <div class="bg-blue-50 p-4 ">
                 <h3 class="font-semibold text-blue-800 mb-2">Rental Summary</h3>
                 <div class="flex justify-between">
                   <span>Total Price:</span>
@@ -209,7 +209,7 @@
             <button
               type="submit"
               disabled={formSubmitting || !startDate || !endDate || calculatedPrice <= 0}
-              class="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 disabled:bg-gray-400"
+              class="w-full py-3 bg-blue-600 text-white  font-medium hover:bg-blue-700 disabled:bg-gray-400"
             >
               {formSubmitting ? 'Submitting...' : 'Submit Rental Request'}
             </button>
