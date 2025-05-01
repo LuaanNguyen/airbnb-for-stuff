@@ -4,8 +4,8 @@
   import { setAuth } from '$lib/auth';
   import type { LoginResponse } from '$lib/types';
   
-  let email = 'johnsonjoshua@example.org';
-  let password = '&qi+O83s*GE3';
+  let email = 'alice@example.com';
+  let password = 'anything';
   let error = '';
   let loading = false;
 
@@ -29,8 +29,8 @@
   }
 </script>
 
-<div class="max-w-md mx-auto p-8 rounded-lg shadow-md">
-  <h1 class="text-center text-2xl font-bold mb-6">Login</h1>
+<div class="max-w-md mx-auto p-8">
+
   
   {#if error}
     <div class="bg-red-50 text-red-800 p-3 rounded-md mb-4">
@@ -38,7 +38,8 @@
     </div>
   {/if}
   
-  <form on:submit|preventDefault={handleLogin}>
+  <form on:submit|preventDefault={handleLogin} class="pt-40">
+    <h1 class="text-center text-2xl font-bold mb-6">Login to <br/> AirBnb for Items 📦</h1>
     <div class="mb-4">
       <label for="email" class="block mb-2 font-medium">Email</label>
       <input 

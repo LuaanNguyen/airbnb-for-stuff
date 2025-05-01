@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { getAllItems, createItem, deleteItem, updateItem, getAllCategories } from '$lib/services/api';
+  import { getMyItems, createItem, deleteItem, updateItem, getAllCategories } from '$lib/services/api';
   import { isAuthenticated, user } from '$lib/auth';
   import type { Item, Category } from '$lib/types';
 
@@ -33,17 +33,14 @@
     try {
       loading = true;
       // Load user's items and categories
-      const [items, cats] = await Promise.all([
-        getAllItems(),
+      const [userItems, cats] = await Promise.all([
+        getMyItems(),
         getAllCategories()
       ]);
 
       categories = cats;
       
-      // Filter items to only show the user's items
-      if ($user && $user.id) {
-        myItems = items.filter(item => item.owner_id === $user!.id);
-      }
+      myItems = userItems;
       
       loading = false;
     } catch (e) {
@@ -282,14 +279,14 @@
           <button
             type="button"
             on:click={() => showForm = false}
-            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+            class="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={formSubmitting}
-            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+            class="px-4 py-2  bg-black text-white hover:bg-white hover:text-black border"
           >
             {formSubmitting ? 'Saving...' : 'Save Item'}
           </button>
@@ -303,7 +300,7 @@
       <div class="text-gray-600">Loading your items...</div>
     </div>
   {:else if myItems.length === 0}
-    <div class="bg-gray-50 p-8 text-center rounded-lg">
+    <div class="bg-gray-50 p-8 text-center ">
       <p class="text-gray-600 mb-4">You don't have any items listed yet.</p>
       <button
         on:click={showAddForm}
@@ -313,7 +310,7 @@
       </button>
     </div>
   {:else}
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="bg-white shadow-md  overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

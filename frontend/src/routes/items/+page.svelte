@@ -194,9 +194,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {#each items as item}
         <div class="bg-white  overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
-          <div class="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-500">
-            No image available
-          </div>
+          <!-- Image Display -->
+          {#if item.image}
+            <img src={item.image} alt={item.name} class="w-full h-48 object-cover" />
+          {:else}
+            <div class="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500">
+              No image available
+            </div>
+          {/if}
           
           <div class="p-4">
             <h2 class="text-lg font-semibold text-gray-900 mb-2 truncate">

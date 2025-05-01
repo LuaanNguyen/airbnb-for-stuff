@@ -52,6 +52,7 @@ export interface ItemWithOwner {
 	owner_id: number;
 	owner_name: string;
 	available: boolean;
+	image?: string;
 }
 
 export interface LoginResponse {
