@@ -59,7 +59,6 @@ CREATE TABLE items (
 -- Add indexes for better performance
 CREATE INDEX idx_items_available ON items(i_available);
 CREATE INDEX idx_items_owner ON items(owner_id);
-
 CREATE TYPE transaction_type AS ENUM ('Purchase', 'Sale', 'Refund', 'Rental');
 
 CREATE TABLE transactions (

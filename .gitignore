@@ -3,3 +3,4 @@ venv/
 backend/.env
 data/venv/
 *.env # ignore env at any depth
+.DS_Store
